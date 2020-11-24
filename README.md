@@ -1,0 +1,1 @@
+# addon-youtube-watched-filter
