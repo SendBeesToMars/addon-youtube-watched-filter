@@ -1,47 +1,51 @@
 
 const callback = () => {
-    let watchedVideo = document.getElementsByTagName("ytd-thumbnail-overlay-resume-playback-renderer");
+    var watchedVideos = document.getElementsByTagName("ytd-thumbnail-overlay-resume-playback-renderer");
     chrome.storage.sync.get("range", function(value){
         let range = value.range;
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         // removes the up next video if watched
-        console.log(watchedVideo[0].closest("ytd-compact-video-renderer"));
-        if (typeof watchedVideo[0].closest("ytd-compact-autoplay-renderer") !== "undefined") {
-            // watchedVideo[0].parentElement.parentElement.parentElement.parentElement.parentElement.remove();
-            let vid = watchedVideo[0].closest("ytd-compact-autoplay-renderer");
-            vid.remove();
-            console.log("video removed1");
+            // console.log(watchedVideos[0].closest("ytd-compact-video-renderer"));
+            // console.log(watchedVideo[0].closest("ytd-compact-autoplay-renderer"));
+        if (typeof watchedVideos[0] !== "undefined" ) {
+            if (typeof watchedVideos[0].closest("ytd-compact-autoplay-renderer") !== "undefined" && watchedVideos[0].closest("ytd-compact-autoplay-renderer" !== null)) {
+                // watchedVideo[0].parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+                // vid.remove();
+                watchedVideo[0].closest("ytd-compact-autoplay-renderer").remove();
+                console.log("1");
+                }
+            else if (typeof watchedVideos[0].closest("ytd-compact-video-renderer") !== "undefined") {
+                // watchedVideo[0].parentElement.parentElement.parentElement.parentElement.remove();
+                // vid.remove();
+                watchedVideos[0].closest("ytd-compact-video-renderer").remove();
+                console.log("2");
             }
-        else {
-            // watchedVideo[0].parentElement.parentElement.parentElement.parentElement.remove();
-            let vid = watchedVideos[0].closest("ytd-compact-video-renderer");
-            console.log("xdddddddddddd");
-            console.log(vid);
-            vid.remove();
-            console.log("video removed2");
+            else {
+                console.log("3");
+            }
         }
-        // removes watched videos
-
-        // console.log(watchedVideos[1].closest("ytd-compact-video-renderer"));
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     });
 };
 
-var recomendations = document.getElementById("secondary");
-const config = { attributes: true, childList: true, subtree: true };
-const observer = new MutationObserver(callback);
-observer.observe(recomendations, config);
 
-// function checkNode() {
-//     setTimeout(() => {
-//         if (typeof document.getElementById("secondary") !== "undefined") {
-//             var recomendations = document.getElementById("secondary");
-//             // console.log(typeof(recomendations));
-//         }
-//         else {
-//             checkNode();
-//         }
-//     }, 250);
-// }
+function checkNode(){
+    // var recomendations = document.getElementById("secondary");
+    var watchedVideos = document.getElementsByTagName("ytd-thumbnail-overlay-resume-playback-renderer");
+    if(watchedVideos.length === 0){
+        console.log("node not found");
+        window.setTimeout(checkNode, 500);
+        return;
+    }
+    console.log("node found");
+    console.log(watchedVideos.length);
+    console.log(watchedVideos);
+    const config = { attributes: true, childList: true, subtree: true };
+    const observer = new MutationObserver(callback);
+    var recomendations = document.getElementById("secondary");
+    observer.observe(recomendations, config);
+}
 
-// checkNode();
+checkNode();
+
+browser.runtime.connect().onDisconnect.addListener(function() {
+    observer.disconnect();
+});
