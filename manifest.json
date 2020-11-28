@@ -2,10 +2,8 @@
     "name": "Youtube watched filter",
     "version": "1.0",
     "description": "Filters out watched vidoes in your youtube sidebar (recommendations)",
-    "permissions": ["activeTab",
-                    "storage",
-                    "declarativeContent",
-                    "notifications"],
+    "permissions": ["storage",
+                    "declarativeContent"],
     "background": {
         "scripts": ["background.js"],
         "persistent": false
