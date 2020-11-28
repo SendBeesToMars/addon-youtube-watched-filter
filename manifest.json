@@ -2,13 +2,17 @@
     "name": "Youtube watched filter",
     "version": "1.0",
     "description": "Filters out watched vidoes in your youtube sidebar (recommendations)",
-    "permissions": ["activeTab", "storage", "declarativeContent"],
+    "permissions": ["activeTab",
+                    "storage",
+                    "declarativeContent",
+                    "notifications"],
     "background": {
         "scripts": ["background.js"],
         "persistent": false
     },
     "content_scripts": [{
         "matches": ["https://www.youtube.com/*"],
+        "run_at": "document_end",
         "js": ["content.js"]
     }],
     "page_action": {

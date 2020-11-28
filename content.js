@@ -26,4 +26,11 @@ function checkNode(){
     }
 }
 
+const filter = {
+    url:
+    [
+      {hostContains: "youtube.com"}
+    ]
+};
+
 checkNode();
