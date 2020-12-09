@@ -12,35 +12,56 @@ function checkVideos(){
     }
 
     let len = watchedVideos.length;
+    console.log(len);
 
     // deletes watched videos :)
-    for (let index = 0; index < len; index++) {
-        // array index at 0 as remove() removes item from array
-        // watchedVideos[0].closest("ytd-compact-video-renderer").remove();
+    let index = 0;
+
+    for (let i = 0; i < len; i++) {
         // gets the % of the video watched
-        let watched_ratio = watchedVideos[0].childNodes[1].style.width.split("%")[0];
+        let watched_ratio = watchedVideos[index].childNodes[1].style.width.split("%")[0];
         chrome.storage.sync.get("range", (data) => {
-            if (parseInt(watched_ratio) < parseInt(data.range)){
-                console.log("removed :)");
+            console.log("index " + watched_ratio + "   " + data.range);
+            if (parseInt(watched_ratio) <= parseInt(data.range)){
+                console.log("3");
+                // array index at 0 as remove() removes item from array
+                watchedVideos[index].closest("ytd-compact-video-renderer").remove();
+            }
+            else{
+                index++;
             }
         });
-    
     }
 }
 
 const observerConfig = { attributes: false, childList: true, subtree: true };
 const sidebarObserver = new MutationObserver(checkVideos);
-const sidebar = document.getElementById("secondary");
 
 
 // addon does not work while traversing youtube. Addoan thinks it one page, thus the need to observer changes
 function checkSidebar(){
+    const sidebar = document.getElementById("secondary");
     // if sidebar not loaded, try agian in .5s
     if(!sidebar) {
         window.setTimeout(checkSidebar, 500);
+        console.log("sidebar not loaded.. waiting...");
         return;
     }
     sidebarObserver.observe(sidebar, observerConfig);
 }
 
-checkSidebar();
+function afterNavigate() {
+    if ('/watch' === location.pathname) {
+        checkSidebar();
+    }
+}
+
+(document.body || document.documentElement).addEventListener('transitionend',
+  function(/*TransitionEvent*/ event) {
+    if (event.propertyName === 'width' && event.target.id === 'progress') {
+        afterNavigate();
+    }
+}, true);
+
+// After page load
+afterNavigate();
