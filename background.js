@@ -1,6 +1,7 @@
 chrome.runtime.onInstalled.addListener(function () {
     chrome.storage.sync.set({
-        "range": "20"
+        "range": "20",
+        "filtered": 0
     });
     chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
       chrome.declarativeContent.onPageChanged.addRules([{

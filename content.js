@@ -1,5 +1,13 @@
 
+let filteredVideosNum = 0;
+let filteredVideosNumInitial = 0;
 
+
+chrome.storage.sync.get("filtered", (data) => {
+    filteredVideosNum = data.filtered;
+    filteredVideosNumInitial = data.filtered;
+    
+});
 
 function checkVideos(){
     var watchedVideos = document.getElementsByTagName("ytd-thumbnail-overlay-resume-playback-renderer");
@@ -26,11 +34,18 @@ function checkVideos(){
                 console.log("3");
                 // array index at 0 as remove() removes item from array
                 watchedVideos[index].closest("ytd-compact-video-renderer").remove();
+                filteredVideosNum++;
             }
             else{
                 index++;
             }
         });
+    }
+    if(filteredVideosNumInitial != filteredVideosNum){
+        chrome.storage.sync.set({
+            "filtered": filteredVideosNum
+        });
+        filteredVideosNumInitial = filteredVideosNum;
     }
 }
 
