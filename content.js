@@ -17,7 +17,7 @@ function checkVideos(){
     if(watchedVideos.length === 0){
         return;
     }
-    
+
     try {
         current_video = watchedVideos[video_index].closest("ytd-compact-video-renderer");
         video_title = current_video.querySelector("#video-title").textContent.trim();
@@ -32,17 +32,14 @@ function checkVideos(){
     // gets user selected range and checks % of video watched
     chrome.storage.sync.get("range", (data) => {
         // removes watched video if suits range
+
         if (parseInt(watched_ratio) <= parseInt(data.range)){
             current_video.remove();
+            video_index = 0;
             filteredVideosNum++;
         }
         else{
             video_index++;
-        }
-
-        // resets index
-        if (video_index == watchedVideos.length){
-            video_index = 0;
         }
     });
 
@@ -59,11 +56,11 @@ const observerConfig = { attributes: false, childList: true, subtree: true };
 const sidebarObserver = new MutationObserver(checkVideos);
 
 
-// youtube uses a different way to load its pages thus the need to check constantly
+// run sidebar observer if sidebar present else wait
 function checkSidebar(){
-    const sidebar = document.getElementById("secondary");
-    // if sidebar not loaded, try agian in .5s
+    let sidebar = document.getElementById("secondary");
 
+    // if sidebar not loaded, try agian in .5s
     if(!sidebar) {
         window.setTimeout(checkSidebar, 500);
         return;
@@ -72,7 +69,10 @@ function checkSidebar(){
 }
 
 function afterNavigate() {
+    console.log(location.pathname);
     if ('/watch' === location.pathname) {
+        // resets index on new page
+        video_index = 0;
         checkSidebar();
     }
 }
