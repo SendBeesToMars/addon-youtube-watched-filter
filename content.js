@@ -69,7 +69,6 @@ function checkSidebar(){
 }
 
 function afterNavigate() {
-    console.log(location.pathname);
     if ('/watch' === location.pathname) {
         // resets index on new page
         video_index = 0;
