@@ -32,6 +32,7 @@ function checkVideos(){
     // gets user selected range and checks % of video watched
     chrome.storage.sync.get("range", (data) => {
         // removes watched video if suits range
+        console.log("current video: ", video_title, ":", watched_ratio, "vs", data.range);
         if (parseInt(watched_ratio) <= parseInt(data.range)){
             console.log("removing", video_title, ":", watched_ratio, "vs", data.range);
             current_video.remove();
@@ -39,6 +40,11 @@ function checkVideos(){
         }
         else{
             video_index++;
+        }
+
+        // resets index
+        if (video_index == watchedVideos.length){
+            video_index = 0;
         }
     });
 
@@ -59,6 +65,7 @@ const sidebarObserver = new MutationObserver(checkVideos);
 function checkSidebar(){
     const sidebar = document.getElementById("secondary");
     // if sidebar not loaded, try agian in .5s
+
     if(!sidebar) {
         window.setTimeout(checkSidebar, 500);
         console.log("sidebar not loaded.. waiting...");
@@ -73,9 +80,11 @@ function afterNavigate() {
     }
 }
 
+// runs script when progress bar loading event is triggered
 (document.body || document.documentElement).addEventListener('transitionend',
   function(/*TransitionEvent*/ event) {
-    if (event.propertyName === 'width' && event.target.id === 'progress') {
+      // there is no transitioned event that can see the finished loading of the sidebar :(
+    if (event.propertyName === 'transform' && event.target.id === 'progress') {
         afterNavigate();
     }
 }, true);
