@@ -32,9 +32,7 @@ function checkVideos(){
     // gets user selected range and checks % of video watched
     chrome.storage.sync.get("range", (data) => {
         // removes watched video if suits range
-        console.log("current video: ", video_title, ":", watched_ratio, "vs", data.range);
         if (parseInt(watched_ratio) <= parseInt(data.range)){
-            console.log("removing", video_title, ":", watched_ratio, "vs", data.range);
             current_video.remove();
             filteredVideosNum++;
         }
@@ -68,7 +66,6 @@ function checkSidebar(){
 
     if(!sidebar) {
         window.setTimeout(checkSidebar, 500);
-        console.log("sidebar not loaded.. waiting...");
         return;
     }
     sidebarObserver.observe(sidebar, observerConfig);
