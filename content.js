@@ -24,25 +24,27 @@ function checkVideos(){
         video_title = current_video.querySelector("#video-title").textContent.trim();
     } catch (error) {
         // video does not exist or has been removed
-        console.log(video_index);
-        console.log(error);
+        // console.log(error);
+        // console.log("ALL VIDEOS:", video_index, watchedVideos[video_index]);
+        // console.log(watchedVideos);
         return;
     }
 
     // gets the % of the video watched
     let watched_ratio = watchedVideos[video_index].childNodes[1].style.width.split("%")[0];
 
-    console.log("CURRENT VID: ", video_index, video_title, watched_ratio, watchedVideos[video_index]);
 
     // gets user selected range and checks % of video watched
     chrome.storage.sync.get("range", (data) => {
         // removes watched video if suits range
         if (parseInt(watched_ratio) <= parseInt(data.range)){
+            // console.log("REMOVING: ", video_index, watched_ratio, video_title);
             current_video.remove();
             video_index = 0;
             filteredVideosNum++;
         }
         else{
+            // console.log("NOT REMOVED:", video_index, watched_ratio, video_title, current_video);
             video_index++;
         }
     });
@@ -73,7 +75,6 @@ function checkSidebar(){
 }
 
 function checkPathname() {
-    console.log(location.pathname);
     if ('/watch' === location.pathname) {
         // resets index on new page
         video_index = 0;
@@ -84,11 +85,12 @@ function checkPathname() {
 // runs script when progress bar loading event is triggered
 (document.body || document.documentElement).addEventListener('transitionend',
   function(/*TransitionEvent*/ event) {
-      console.log(event.propertyName, event.target.id);
+    checkPathname();
       // there is no transitioned event that can see the finished loading of the sidebar :(
-    if (event.propertyName === 'transform' && event.target.id === 'progress') {
-        checkPathname();
-    }
+    // this is inconsistent
+    // if (event.propertyName === 'transform' && event.target.id === 'progress') {
+    //     checkPathname();
+    // }
 }, true);
 
 // After page load
