@@ -37,7 +37,7 @@ function checkVideos(){
     // gets user selected range and checks % of video watched
     chrome.storage.sync.get("range", (data) => {
         // removes watched video if suits range
-        if (parseInt(watched_ratio) <= parseInt(data.range)){
+        if (parseInt(watched_ratio) >= parseInt(data.range)){
             // console.log("REMOVING: ", video_index, watched_ratio, video_title);
             current_video.remove();
             video_index = 0;
@@ -96,4 +96,3 @@ function checkPathname() {
 // After page load
 checkPathname();
 
-// TODO: checking transitioned events might not always work?
