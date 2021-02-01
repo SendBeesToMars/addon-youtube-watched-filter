@@ -12,7 +12,6 @@ let video_index = 0;
 
 function checkVideos(){
     var watchedVideos = document.getElementById("secondary-inner").getElementsByTagName("ytd-thumbnail-overlay-resume-playback-renderer");
-    // var watchedVideos = document.getElementsByTagName("ytd-thumbnail-overlay-resume-playback-renderer");
 
     // if no watched videos
     if(watchedVideos.length === 0){
@@ -23,10 +22,6 @@ function checkVideos(){
         current_video = watchedVideos[video_index].closest("ytd-compact-video-renderer");
         video_title = current_video.querySelector("#video-title").textContent.trim();
     } catch (error) {
-        // video does not exist or has been removed
-        // console.log(error);
-        // console.log("ALL VIDEOS:", video_index, watchedVideos[video_index]);
-        // console.log(watchedVideos);
         return;
     }
 
@@ -38,13 +33,11 @@ function checkVideos(){
     chrome.storage.sync.get("range", (data) => {
         // removes watched video if suits range
         if (parseInt(watched_ratio) >= parseInt(data.range)){
-            // console.log("REMOVING: ", video_index, watched_ratio, video_title);
             current_video.remove();
             video_index = 0;
             filteredVideosNum++;
         }
         else{
-            // console.log("NOT REMOVED:", video_index, watched_ratio, video_title, current_video);
             video_index++;
         }
     });
@@ -86,11 +79,6 @@ function checkPathname() {
 (document.body || document.documentElement).addEventListener('transitionend',
   function(/*TransitionEvent*/ event) {
     checkPathname();
-      // there is no transitioned event that can see the finished loading of the sidebar :(
-    // this is inconsistent
-    // if (event.propertyName === 'transform' && event.target.id === 'progress') {
-    //     checkPathname();
-    // }
 }, true);
 
 // After page load
